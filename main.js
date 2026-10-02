@@ -26,11 +26,32 @@ function log(kind, text, data) {
   $("log").scrollTop = $("log").scrollHeight
 }
 
+// The browser blocks `window.open` once the widget click is a few seconds old, so the log also gets a link.
+function logExportLink(url) {
+  let parsed
+  try {
+    parsed = new URL(url)
+  } catch {
+    return log("err", "export:done has no valid url")
+  }
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return log("err", "export:done url is not http(s)")
+
+  log("info", "Export ready, open it here if no tab opened:")
+  const link = document.createElement("a")
+  link.href = parsed.href
+  link.target = "_blank"
+  link.rel = "noopener"
+  link.textContent = parsed.href
+  $("log").lastChild.append("  ", link)
+}
+
 function applySession(body) {
   if (body.contentUnitId) fields.contentUnitId.value = body.contentUnitId
-  if (body.token) fields.token.value = body.token
   if (body.sessionExpiresAt) fields.sessionExpiresAt.value = body.sessionExpiresAt
-  if (body.expiresAt) tokenExpiresAt = new Date(body.expiresAt)
+  if (body.token) {
+    fields.token.value = body.token
+    tokenExpiresAt = body.expiresAt ? new Date(body.expiresAt) : null
+  }
 }
 
 $("create-response").addEventListener("input", (event) => {
@@ -108,11 +129,10 @@ window.addEventListener("message", (event) => {
       else log("info", "Auto refresh is off, so the request goes unanswered")
       break
     case "close":
-      frame.removeAttribute("src")
-      widgetOrigin = null
-      log("info", "Widget asked to close, so the iframe is unloaded")
+      unloadWidget("Widget asked to close, so the iframe is unloaded")
       break
     case "export:done":
+      logExportLink(message.url)
       window.open(message.url, "_blank", "noopener")
       break
   }
@@ -136,12 +156,14 @@ $("load").addEventListener("click", () => {
   log("info", `Loading ${frame.src}`)
 })
 
-$("unload").addEventListener("click", () => {
+function unloadWidget(reason) {
   frame.removeAttribute("src")
   widgetOrigin = null
   initSent = false
-  log("info", "Unloaded the widget")
-})
+  log("info", reason)
+}
+
+$("unload").addEventListener("click", () => unloadWidget("Unloaded the widget"))
 
 $("refresh-now").addEventListener("click", refresh)
 $("send-token").addEventListener("click", () => {
