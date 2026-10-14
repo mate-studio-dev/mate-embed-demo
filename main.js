@@ -26,23 +26,30 @@ function log(kind, text, data) {
   $("log").scrollTop = $("log").scrollHeight
 }
 
-// The browser blocks `window.open` once the widget click is a few seconds old, so the log also gets a link.
-function logExportLink(url) {
-  let parsed
-  try {
-    parsed = new URL(url)
-  } catch {
-    return log("err", "export:done has no valid url")
-  }
-  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return log("err", "export:done url is not http(s)")
+// The browser blocks `window.open` once the widget click is a few seconds old, so the log also gets a link per file.
+function logExportLinks(urls) {
+  log("info", `Export ready, ${urls.length} file(s). Open them here if no tab opened:`)
+  for (const url of urls) {
+    let parsed
+    try {
+      parsed = new URL(url)
+    } catch {
+      log("err", "export:done has an invalid url")
+      continue
+    }
+    if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+      log("err", "export:done url is not http(s)")
+      continue
+    }
 
-  log("info", "Export ready, open it here if no tab opened:")
-  const link = document.createElement("a")
-  link.href = parsed.href
-  link.target = "_blank"
-  link.rel = "noopener"
-  link.textContent = parsed.href
-  $("log").lastChild.append("  ", link)
+    log("info", "")
+    const link = document.createElement("a")
+    link.href = parsed.href
+    link.target = "_blank"
+    link.rel = "noopener"
+    link.textContent = parsed.href
+    $("log").lastChild.append(link)
+  }
 }
 
 function applySession(body) {
@@ -132,8 +139,8 @@ window.addEventListener("message", (event) => {
       unloadWidget("Widget asked to close, so the iframe is unloaded")
       break
     case "export:done":
-      logExportLink(message.url)
-      window.open(message.url, "_blank", "noopener")
+      logExportLinks(message.urls)
+      window.open(message.urls[0], "_blank", "noopener")
       break
   }
 })
