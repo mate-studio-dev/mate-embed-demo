@@ -53,7 +53,7 @@ function logExportLinks(urls) {
 }
 
 function applySession(body) {
-  if (body.contentUnitId) fields.contentUnitId.value = body.contentUnitId
+  if (body.contentUnitId && fields.contentUnitId) fields.contentUnitId.value = body.contentUnitId
   if (body.sessionExpiresAt) fields.sessionExpiresAt.value = body.sessionExpiresAt
   if (body.token) {
     fields.token.value = body.token
@@ -146,8 +146,10 @@ window.addEventListener("message", (event) => {
 })
 
 $("load").addEventListener("click", () => {
-  const contentUnitId = fields.contentUnitId.value.trim()
-  if (!contentUnitId || !fields.token.value.trim()) return log("err", "Fill in contentUnitId and the session token first")
+  // The gallery page has no contentUnitId field: its session is minted with a workspace only.
+  const contentUnitId = fields.contentUnitId?.value.trim()
+  if (fields.contentUnitId && !contentUnitId) return log("err", "Fill in contentUnitId first")
+  if (!fields.token.value.trim()) return log("err", "Fill in the session token first")
 
   let appUrl
   try {
@@ -158,8 +160,14 @@ $("load").addEventListener("click", () => {
 
   widgetOrigin = appUrl.origin
   initSent = false
-  const params = new URLSearchParams({ host_origin: window.location.origin, content_unit_id: contentUnitId })
-  frame.src = `${widgetOrigin}/embed/editor?${params}`
+  const params = new URLSearchParams({ host_origin: window.location.origin })
+  if (contentUnitId) params.set("content_unit_id", contentUnitId)
+  for (const name of ["view", "open"]) {
+    const value = $(name)?.value
+    if (value) params.set(name, value)
+  }
+  const widgetPath = document.body.dataset.widgetPath ?? "/embed/editor"
+  frame.src = `${widgetOrigin}${widgetPath}?${params}`
   log("info", `Loading ${frame.src}`)
 })
 
