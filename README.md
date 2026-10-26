@@ -28,3 +28,7 @@ curl -X POST https://<mate-api-host>/embed/sessions \
 ```
 
 Then paste the response and click "Load widget", as above. The page shares `main.js` with the editor demo and reads the widget path from `data-widget-path` on `<body>`.
+
+## Template preview
+
+Open http://localhost:8099/template.html to embed `/embed/<templateId>`, which shows one template card. A click opens the template in place. Fill in `templateId` and use a session created with the workspace only, as for the gallery. The widget route needs the `/embed/:templateId` page from mate-frontend PR #3318.

@@ -8,6 +8,7 @@ const fields = {
   locale: $("locale"),
   appUrl: $("app-url"),
   apiUrl: $("api-url"),
+  templateId: $("template-id"),
 }
 
 let widgetOrigin = null
@@ -146,9 +147,11 @@ window.addEventListener("message", (event) => {
 })
 
 $("load").addEventListener("click", () => {
-  // The gallery page has no contentUnitId field: its session is minted with a workspace only.
+  // The gallery and template pages have no contentUnitId field: their sessions are minted with a workspace only.
   const contentUnitId = fields.contentUnitId?.value.trim()
   if (fields.contentUnitId && !contentUnitId) return log("err", "Fill in contentUnitId first")
+  const templateId = fields.templateId?.value.trim()
+  if (fields.templateId && !templateId) return log("err", "Fill in templateId first")
   if (!fields.token.value.trim()) return log("err", "Fill in the session token first")
 
   let appUrl
@@ -166,7 +169,9 @@ $("load").addEventListener("click", () => {
     const value = $(name)?.value
     if (value) params.set(name, value)
   }
-  const widgetPath = document.body.dataset.widgetPath ?? "/embed/editor"
+  const widgetPath = templateId
+    ? `/embed/${encodeURIComponent(templateId)}`
+    : (document.body.dataset.widgetPath ?? "/embed/editor")
   frame.src = `${widgetOrigin}${widgetPath}?${params}`
   log("info", `Loading ${frame.src}`)
 })
