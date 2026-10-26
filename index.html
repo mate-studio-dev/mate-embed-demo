@@ -9,9 +9,13 @@
 <body>
 <main>
   <aside>
+    <nav class="tabs" aria-label="Demo mode">
+      <a href="index.html" aria-current="page">Editor</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="template.html">Template</a>
+    </nav>
     <h1>Mate embed demo</h1>
     <p class="hint">
-      <a href="gallery.html">Template gallery demo</a>, <a href="template.html">Template preview demo</a>.
       This page's origin is <code id="own-origin"></code>.
       The iframe URL passes it as <code>host_origin</code>. The widget drops every message from any other origin.
     </p>

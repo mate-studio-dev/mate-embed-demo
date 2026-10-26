@@ -17,6 +17,34 @@ let initSent = false
 
 $("own-origin").textContent = window.location.origin
 
+// Every page of the demo shares one origin, so these fields survive a tab switch.
+const STORAGE_KEY = "mate-embed-demo-session"
+const PERSISTED_FIELDS = ["token", "sessionExpiresAt", "locale", "appUrl", "apiUrl"]
+
+function saveSession() {
+  const saved = Object.fromEntries(PERSISTED_FIELDS.map((name) => [name, fields[name].value]))
+  saved.tokenExpiresAt = tokenExpiresAt?.toISOString() ?? null
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(saved))
+}
+
+function restoreSession() {
+  let saved
+  try {
+    saved = JSON.parse(localStorage.getItem(STORAGE_KEY))
+  } catch {
+    return
+  }
+  if (!saved) return
+
+  for (const name of PERSISTED_FIELDS) {
+    if (saved[name] !== undefined) fields[name].value = saved[name]
+  }
+  tokenExpiresAt = saved.tokenExpiresAt ? new Date(saved.tokenExpiresAt) : null
+}
+
+restoreSession()
+for (const name of PERSISTED_FIELDS) fields[name].addEventListener("change", saveSession)
+
 function log(kind, text, data) {
   const line = document.createElement("div")
   line.className = kind
@@ -60,6 +88,7 @@ function applySession(body) {
     fields.token.value = body.token
     tokenExpiresAt = body.expiresAt ? new Date(body.expiresAt) : null
   }
+  saveSession()
 }
 
 $("create-response").addEventListener("input", (event) => {
