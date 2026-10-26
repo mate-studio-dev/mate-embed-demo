@@ -37,4 +37,4 @@ The size is saved per tab. The Editor and Gallery tabs start on Fill. The Templa
 
 ## Template preview
 
-Open http://localhost:8099/template.html to embed `/embed/<templateId>`, which shows one template card. A click opens the template in place. Fill in `templateId` and use a session created with the workspace only, as for the gallery. The widget route needs the `/embed/:templateId` page from mate-frontend PR #3318.
+Open http://localhost:8099/template.html to embed `/embed/<templateId>`, which shows one template card. A click opens the template in place. Set `open` to `host` to keep the widget on the card: a click then sends `template:selected` to the page, and the log shows it. Fill in `templateId` and use a session created with the workspace only, as for the gallery. The widget route needs the `/embed/:templateId` page from mate-frontend PR #3318.
