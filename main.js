@@ -9,6 +9,7 @@ const fields = {
   appUrl: $("app-url"),
   apiUrl: $("api-url"),
   templateId: $("template-id"),
+  environment: $("environment"),
 }
 
 let widgetOrigin = null
@@ -44,6 +45,35 @@ function restoreSession() {
 
 restoreSession()
 for (const name of PERSISTED_FIELDS) fields[name].addEventListener("change", saveSession)
+
+const ENVIRONMENTS = {
+  staging: { appUrl: "https://app-staging.mate-studio.com", apiUrl: "https://api-staging.mate-studio.com" },
+  production: { appUrl: "https://app.mate-studio.com", apiUrl: "https://api.mate-studio.com" },
+  development: { appUrl: "https://app.lvh.me", apiUrl: "https://api.lvh.me" },
+}
+
+function normalizeUrl(value) {
+  return value.trim().replace(/\/$/, "")
+}
+
+// The picker is derived from the two URLs, so it also reads right after a restore or a manual edit.
+function syncEnvironment() {
+  const appUrl = normalizeUrl(fields.appUrl.value)
+  const apiUrl = normalizeUrl(fields.apiUrl.value)
+  const match = Object.entries(ENVIRONMENTS).find(([, urls]) => urls.appUrl === appUrl && urls.apiUrl === apiUrl)
+  fields.environment.value = match ? match[0] : "custom"
+}
+
+fields.environment.addEventListener("change", () => {
+  const urls = ENVIRONMENTS[fields.environment.value]
+  if (!urls) return
+  fields.appUrl.value = urls.appUrl
+  fields.apiUrl.value = urls.apiUrl
+  saveSession()
+  renderSummaries()
+})
+for (const field of [fields.appUrl, fields.apiUrl]) field.addEventListener("input", syncEnvironment)
+syncEnvironment()
 
 function log(kind, text, data) {
   const line = document.createElement("div")

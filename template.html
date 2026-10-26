@@ -33,15 +33,28 @@
     <h2>Widget</h2>
       <label for="template-id">templateId</label>
       <input id="template-id" placeholder="The widget shows one card for this template">
-      <label for="locale">Locale</label>
-      <select id="locale"><option>de</option><option>en</option></select>
+      <div class="grid-2">
+        <div>
+          <label for="environment">Environment</label>
+          <select id="environment">
+            <option value="staging">Staging</option>
+            <option value="production">Production</option>
+            <option value="development">Development</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+        <div>
+          <label for="locale">Locale</label>
+          <select id="locale"><option>de</option><option>en</option></select>
+        </div>
+      </div>
 
     <details class="fold">
       <summary><span class="fold-title">Endpoints</span><span class="fold-summary" id="endpoints-summary"></span></summary>
       <label for="app-url">Mate app URL</label>
-      <input id="app-url" value="https://app.lvh.me">
+      <input id="app-url" value="https://app-staging.mate-studio.com">
       <label for="api-url">Mate API URL</label>
-      <input id="api-url" value="https://api.lvh.me">
+      <input id="api-url" value="https://api-staging.mate-studio.com">
     </details>
 
     <details class="fold">

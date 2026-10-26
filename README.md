@@ -12,7 +12,7 @@ A host page that embeds the Mate editor widget in an iframe, for testing by hand
     -H "Content-Type: application/json" \
     -d '{"workspaceId": "<WORKSPACE_ID>", "contentTemplateId": "<CONTENT_TEMPLATE_ID>"}'
   ```
-3. Paste the JSON response into the session box, open "Endpoints" to set the app and API URLs if they differ, and click "Load widget". The token and `sessionExpiresAt` fields sit behind the status line under the box.
+3. Paste the JSON response into the session box, pick the environment (Staging is the default, then Production or Development), and click "Load widget". The picker fills the app and API URLs. Open "Endpoints" to edit them, which switches the picker to Custom. The token and `sessionExpiresAt` fields sit behind the status line under the box.
 
 The log at the bottom shows every message between the page and the widget.
 
