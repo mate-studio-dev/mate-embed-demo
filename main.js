@@ -89,6 +89,7 @@ function applySession(body) {
     tokenExpiresAt = body.expiresAt ? new Date(body.expiresAt) : null
   }
   saveSession()
+  renderStatus()
 }
 
 $("create-response").addEventListener("input", (event) => {
@@ -272,16 +273,52 @@ new ResizeObserver(([entry]) => {
   sizeInputs.height.placeholder = String(height)
 }).observe(frameBox)
 
-setInterval(() => {
+function renderStatus() {
   const lines = []
-  if (tokenExpiresAt) {
+  let state = "ok"
+  if (!fields.token.value.trim()) {
+    lines.push("No session yet")
+    state = "none"
+  } else if (!tokenExpiresAt) {
+    lines.push("Token set, expiry unknown")
+    state = "none"
+  } else {
     const minutes = Math.round((tokenExpiresAt - Date.now()) / 60000)
     lines.push(minutes > 0 ? `Token expires in ${minutes} min` : "Token expired")
+    if (minutes <= 0) state = "bad"
+    else if (minutes <= 5) state = "warn"
   }
+
   const ceiling = sessionExpiresAt()
   if (ceiling && !Number.isNaN(Date.parse(ceiling))) {
     const hours = (Date.parse(ceiling) - Date.now()) / 3600000
-    lines.push(hours > 0 ? `Session ends in ${hours.toFixed(1)} h` : "Session ended")
+    lines.push(hours > 0 ? `session ends in ${hours.toFixed(1)} h` : "session ended")
+    if (hours <= 0) state = "bad"
   }
-  $("status").innerHTML = lines.map((line) => `<span>${line}</span>`).join("")
-}, 1000)
+
+  $("status").textContent = lines.join(" · ")
+  $("status").dataset.state = state
+}
+
+function hostOf(value) {
+  try {
+    return new URL(value.trim()).host
+  } catch {
+    return value.trim() || "not set"
+  }
+}
+
+function renderSummaries() {
+  $("endpoints-summary").textContent = `${hostOf(fields.appUrl.value)} · ${hostOf(fields.apiUrl.value)}`
+  $("refresh-summary").textContent = $("auto-refresh").checked ? "auto-refresh on" : "auto-refresh off"
+}
+
+for (const field of [fields.token, fields.sessionExpiresAt, fields.appUrl, fields.apiUrl, $("auto-refresh")]) {
+  field.addEventListener("input", () => {
+    renderStatus()
+    renderSummaries()
+  })
+}
+renderSummaries()
+renderStatus()
+setInterval(renderStatus, 1000)
