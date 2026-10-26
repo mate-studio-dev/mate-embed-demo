@@ -220,6 +220,51 @@ $("send-token").addEventListener("click", () => {
   sendTokenUpdated()
 })
 
+// An empty width or height means "fill that dimension of the stage".
+const SIZE_STORAGE_KEY = "mate-embed-demo-size"
+const frameBox = $("frame-box")
+const sizeInputs = { width: $("width"), height: $("height") }
+const sizePresets = document.querySelectorAll(".size-preset")
+
+function applySize() {
+  const width = Number(sizeInputs.width.value) || null
+  const height = Number(sizeInputs.height.value) || null
+  frameBox.style.width = width ? `${width}px` : ""
+  frameBox.style.height = height ? `${height}px` : ""
+  for (const preset of sizePresets) {
+    const matches = (Number(preset.dataset.width) || null) === width && (Number(preset.dataset.height) || null) === height
+    preset.classList.toggle("active", matches)
+  }
+  localStorage.setItem(SIZE_STORAGE_KEY, JSON.stringify({ width, height }))
+}
+
+for (const preset of sizePresets) {
+  preset.addEventListener("click", () => {
+    sizeInputs.width.value = preset.dataset.width
+    sizeInputs.height.value = preset.dataset.height
+    applySize()
+  })
+}
+for (const input of Object.values(sizeInputs)) input.addEventListener("input", applySize)
+
+try {
+  const savedSize = JSON.parse(localStorage.getItem(SIZE_STORAGE_KEY))
+  sizeInputs.width.value = savedSize?.width ?? ""
+  sizeInputs.height.value = savedSize?.height ?? ""
+} catch {
+  // A corrupt entry falls back to "fill".
+}
+applySize()
+
+// The label and the empty-field placeholders show the size the widget really gets, also in "fill" mode.
+new ResizeObserver(([entry]) => {
+  const width = Math.round(entry.contentRect.width)
+  const height = Math.round(entry.contentRect.height)
+  $("size-label").textContent = `${width} × ${height}`
+  sizeInputs.width.placeholder = String(width)
+  sizeInputs.height.placeholder = String(height)
+}).observe(frameBox)
+
 setInterval(() => {
   const lines = []
   if (tokenExpiresAt) {

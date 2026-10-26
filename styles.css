@@ -32,8 +32,8 @@ button.primary { background: var(--accent); border-color: var(--accent); color: 
 code { font-size: 12px; }
 #status { margin-top: 8px; font-size: 12px; }
 #status span { display: block; }
-section.stage { display: grid; grid-template-rows: 1fr 220px; min-width: 0; }
-iframe { width: 100%; height: 100%; border: 0; background: #fff; }
+section.stage { display: grid; grid-template-rows: auto 1fr 220px; min-width: 0; min-height: 0; }
+iframe { display: block; width: 100%; height: 100%; border: 0; background: #fff; }
 #log {
   margin: 0; padding: 8px 12px; overflow-y: auto; border-top: 1px solid var(--border);
   background: var(--panel); font: 12px/1.5 ui-monospace, monospace;
@@ -45,3 +45,18 @@ iframe { width: 100%; height: 100%; border: 0; background: #fff; }
 .tabs a { flex: 1; padding: 6px 0; border-radius: 6px; color: var(--muted); font-weight: 500; text-align: center; text-decoration: none; }
 .tabs a:hover { color: var(--text); }
 .tabs a[aria-current="page"] { background: var(--accent); color: #fff; }
+.size-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--border); background: var(--panel); }
+.size-bar > span { margin-right: 4px; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+.size-bar button { padding: 4px 10px; font-size: 12px; }
+.size-bar button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.size-field { display: flex; align-items: center; gap: 4px; margin: 0 0 0 6px; }
+.size-field input { width: 76px; }
+.viewport {
+  min-height: 0; padding: 32px 16px 16px; overflow: auto;
+  background: repeating-linear-gradient(45deg, transparent 0 8px, var(--border) 8px 9px);
+}
+#frame-box { position: relative; width: 100%; height: 100%; outline: 2px dashed var(--accent); outline-offset: 3px; }
+#size-label {
+  position: absolute; bottom: 100%; left: 0; margin-bottom: 6px; padding: 1px 6px; border-radius: 4px;
+  background: var(--accent); color: #fff; font: 11px/1.5 ui-monospace, monospace; white-space: nowrap;
+}

@@ -55,7 +55,22 @@
   </aside>
 
   <section class="stage">
-    <iframe id="widget" title="Mate widget"></iframe>
+    <div class="size-bar">
+      <span>Size</span>
+      <button class="size-preset" data-width="" data-height="">Fill</button>
+      <button class="size-preset" data-width="1280" data-height="800">Large 1280×800</button>
+      <button class="size-preset" data-width="768" data-height="600">Medium 768×600</button>
+      <button class="size-preset" data-width="375" data-height="667">Small 375×667</button>
+      <button class="size-preset" data-width="240" data-height="320">Tiny 240×320</button>
+      <label class="size-field">W <input id="width" type="number" min="100" step="10"></label>
+      <label class="size-field">H <input id="height" type="number" min="100" step="10"></label>
+    </div>
+    <div class="viewport">
+      <div id="frame-box">
+        <span id="size-label"></span>
+        <iframe id="widget" title="Mate widget"></iframe>
+      </div>
+    </div>
     <pre id="log"></pre>
   </section>
 </main>
