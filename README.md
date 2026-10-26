@@ -31,7 +31,9 @@ Then paste the response and click "Load widget", as above. The page shares `main
 
 ## Widget size
 
-The size bar above the iframe resizes the box around the widget, so you can see how it responds. Pick a preset or type a width and height. An empty field fills that side of the stage. The dashed outline and the label show the size the widget gets. The tabs, the session fields and the size survive a page switch through `localStorage`.
+The size bar above the iframe resizes the box around the widget, so you can see how it responds. Pick a preset or type a width and height. An empty field fills that side of the stage. The dashed outline and the label show the size the widget gets. The session fields and the size survive a page switch through `localStorage`.
+
+The size is saved per tab. The Editor and Gallery tabs start on Fill. The Template tab starts on Small card. Its presets are one square card (200, 300 or 400px wide) plus the widget's 16px padding and the title row, so the card fills the box.
 
 ## Template preview
 

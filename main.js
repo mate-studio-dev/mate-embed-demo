@@ -221,7 +221,8 @@ $("send-token").addEventListener("click", () => {
 })
 
 // An empty width or height means "fill that dimension of the stage".
-const SIZE_STORAGE_KEY = "mate-embed-demo-size"
+// Saved per mode: a size that suits the preview card would be too small for the editor.
+const SIZE_STORAGE_KEY = `mate-embed-demo-size-${document.body.dataset.mode}`
 const frameBox = $("frame-box")
 const sizeInputs = { width: $("width"), height: $("height") }
 const sizePresets = document.querySelectorAll(".size-preset")
@@ -247,13 +248,19 @@ for (const preset of sizePresets) {
 }
 for (const input of Object.values(sizeInputs)) input.addEventListener("input", applySize)
 
-try {
-  const savedSize = JSON.parse(localStorage.getItem(SIZE_STORAGE_KEY))
-  sizeInputs.width.value = savedSize?.width ?? ""
-  sizeInputs.height.value = savedSize?.height ?? ""
-} catch {
-  // A corrupt entry falls back to "fill".
+function restoreSize() {
+  const defaultPreset = document.querySelector(".size-preset[data-default]")
+  let saved = null
+  try {
+    saved = JSON.parse(localStorage.getItem(SIZE_STORAGE_KEY))
+  } catch {
+    // A corrupt entry falls back to the default preset.
+  }
+  sizeInputs.width.value = saved ? (saved.width ?? "") : defaultPreset.dataset.width
+  sizeInputs.height.value = saved ? (saved.height ?? "") : defaultPreset.dataset.height
 }
+
+restoreSize()
 applySize()
 
 // The label and the empty-field placeholders show the size the widget really gets, also in "fill" mode.
