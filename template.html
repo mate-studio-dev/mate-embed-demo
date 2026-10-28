@@ -21,7 +21,10 @@
 
     <h2>Session</h2>
     <label for="create-response">Paste the session response</label>
-    <textarea id="create-response" placeholder='{"sessionId": "...", "contentUnitId": null, "token": "...", ...}'></textarea>
+    <div class="code-input">
+      <pre id="create-response-highlight" aria-hidden="true"></pre>
+      <textarea id="create-response" spellcheck="false" placeholder='{"sessionId": "...", "contentUnitId": null, "token": "...", ...}'></textarea>
+    </div>
     <details class="fold">
       <summary><span id="status" data-state="none">No session yet</span></summary>
       <label for="token">Session token</label>

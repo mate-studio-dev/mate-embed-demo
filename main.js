@@ -122,6 +122,38 @@ function applySession(body) {
   renderStatus()
 }
 
+// Matches a string with an optional key colon, a number, or a literal. An unclosed string still matches while the user types.
+const JSON_TOKEN = /("(?:\\.|[^"\\])*"?)(\s*:)?|-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?|\b(?:true|false|null)\b/g
+
+function span(kind, text) {
+  const node = document.createElement("span")
+  node.className = `json-${kind}`
+  node.textContent = text
+  return node
+}
+
+function highlightResponse() {
+  const text = $("create-response").value
+  const nodes = []
+  let last = 0
+  for (const match of text.matchAll(JSON_TOKEN)) {
+    nodes.push(text.slice(last, match.index))
+    if (match[1]) {
+      nodes.push(span(match[2] ? "key" : "string", match[1]), match[2] ?? "")
+    } else {
+      nodes.push(span("literal", match[0]))
+    }
+    last = match.index + match[0].length
+  }
+  // The extra newline keeps a trailing empty line as tall as the one in the textarea.
+  $("create-response-highlight").replaceChildren(...nodes, text.slice(last), "\n")
+}
+
+$("create-response").addEventListener("input", highlightResponse)
+$("create-response").addEventListener("scroll", (event) => {
+  $("create-response-highlight").scrollTop = event.target.scrollTop
+})
+
 $("create-response").addEventListener("input", (event) => {
   try {
     applySession(JSON.parse(event.target.value))
