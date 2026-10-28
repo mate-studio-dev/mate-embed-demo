@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mate Embed Demo: Template preview</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-mode="template">
+<main>
+  <aside>
+    <nav class="tabs" aria-label="Demo mode">
+      <a href="index.html">Editor</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="template.html" aria-current="page">Template</a>
+    </nav>
+    <h1>Mate embed demo</h1>
+    <p class="hint" title="The iframe URL passes this origin as host_origin. The widget drops every message from any other origin.">
+      Origin <code id="own-origin"></code>
+    </p>
+
+    <h2>Session</h2>
+    <label for="create-response">Paste the session response</label>
+    <textarea id="create-response" placeholder='{"sessionId": "...", "contentUnitId": null, "token": "...", ...}'></textarea>
+    <details class="fold">
+      <summary><span id="status" data-state="none">No session yet</span></summary>
+      <label for="token">Session token</label>
+      <input id="token">
+      <label for="session-expires-at">sessionExpiresAt (optional)</label>
+      <input id="session-expires-at" placeholder="2026-10-03T09:00:00.000Z">
+    </details>
+
+    <h2>Widget</h2>
+      <label for="template-id">templateId</label>
+      <input id="template-id" placeholder="The widget shows one card for this template">
+      <label for="open">open</label>
+      <select id="open"><option value="">(none, same as widget)</option><option>widget</option><option>host</option></select>
+      <div class="grid-2">
+        <div>
+          <label for="environment">Environment</label>
+          <select id="environment">
+            <option value="staging">Staging</option>
+            <option value="production">Production</option>
+            <option value="development">Development</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+        <div>
+          <label for="locale">Locale</label>
+          <select id="locale"><option>de</option><option>en</option></select>
+        </div>
+      </div>
+
+    <details class="fold">
+      <summary><span class="fold-title">Endpoints</span><span class="fold-summary" id="endpoints-summary"></span></summary>
+      <label for="app-url">Mate app URL</label>
+      <input id="app-url" value="https://app-staging.mate-studio.com">
+      <label for="api-url">Mate API URL</label>
+      <input id="api-url" value="https://api-staging.mate-studio.com">
+    </details>
+
+    <details class="fold">
+      <summary><span class="fold-title">Refresh</span><span class="fold-summary" id="refresh-summary"></span></summary>
+      <label class="check"><input type="checkbox" id="auto-refresh" checked> Answer <code>refresh:requested</code> by calling the refresh API</label>
+      <p class="hint">Turn it off to test the widget's 15 second timeout and the expired screen.</p>
+      <div class="row">
+        <button id="refresh-now">Refresh now</button>
+        <button id="send-token">Send token:updated</button>
+      </div>
+    </details>
+
+    <div class="actions">
+      <button class="primary" id="load">Load widget</button>
+      <button id="unload">Unload</button>
+    </div>
+  </aside>
+
+  <section class="stage">
+    <div class="size-bar">
+      <span>Size</span>
+      <button class="size-preset" data-width="" data-height="">Fill</button>
+      <button class="size-preset" data-width="232" data-height="296" data-default>Small card 232×296</button>
+      <button class="size-preset" data-width="332" data-height="396">Medium card 332×396</button>
+      <button class="size-preset" data-width="432" data-height="496">Large card 432×496</button>
+      <label class="size-field">W <input id="width" type="number" min="100" step="10"></label>
+      <label class="size-field">H <input id="height" type="number" min="100" step="10"></label>
+    </div>
+    <div class="viewport">
+      <div id="frame-box">
+        <span id="size-label"></span>
+        <iframe id="widget" title="Mate widget"></iframe>
+      </div>
+    </div>
+    <pre id="log"></pre>
+  </section>
+</main>
+
+<script src="main.js"></script>
+</body>
+</html>
