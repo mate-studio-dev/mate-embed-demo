@@ -29,6 +29,10 @@ curl -X POST https://<mate-api-host>/embed/sessions \
 
 Then paste the response and click "Load widget", as above. The page shares `main.js` with the editor demo and reads the widget path from `data-widget-path` on `<body>`.
 
+## Iframe sandbox
+
+The iframe carries a `sandbox` attribute, as a strict host would set it. The attribution links on Unsplash and Pexels photos open in a new tab, so they need `allow-popups`. `allow-popups-to-escape-sandbox` keeps the opened page unsandboxed. Remove a flag in the HTML to see how the widget behaves without it.
+
 ## Widget size
 
 The size bar above the iframe resizes the box around the widget, so you can see how it responds. Pick a preset or type a width and height. An empty field fills that side of the stage. The dashed outline and the label show the size the widget gets. The session fields and the size survive a page switch through `localStorage`.
